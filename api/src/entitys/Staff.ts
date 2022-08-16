@@ -1,5 +1,5 @@
 import { Entity, Column, BeforeInsert, BeforeUpdate } from "typeorm";
-import BaseModel from "./base";
+import BaseModel from "./Base";
 import * as bcrypt from "bcryptjs";
 
 @Entity("Staff")
