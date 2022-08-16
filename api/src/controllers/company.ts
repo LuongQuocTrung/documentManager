@@ -1,4 +1,6 @@
-import { ICreateCompany, IQueryCompany } from "../models/models";
+import { ICreateCompany } from "../models/createRequest";
+import { IQueryCompany } from "../models/queryRequest";
+
 import CompanyService from "../services/companyService";
 import { Request, Response, NextFunction } from "express";
 import * as response from "../utils/response";
@@ -21,14 +23,14 @@ export default class companyController {
       next(error);
     }
   };
-  static getCompanys = async (
+  static getCompanies = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
       const query: IQueryCompany = req.query as never;
-      const rs = await CompanyService.findCompanys(query);
+      const rs = await CompanyService.findCompanies(query);
       if (!rs.data) {
         return response.r404(res, rs.message);
       }

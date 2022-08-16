@@ -7,7 +7,8 @@ import departmentService from "../services/departmenService";
 import { Department, Staff } from "../entitys";
 import responseMsg from "../const/responseMsg";
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
-  const token: string | any = req.headers["authorization"];
+  const token: string | any = req.headers["authorization"]?.split("Bearer ")[1];
+
   if (!token) {
     return response.r401(res, responseMsg.REQUIRE_TOKEN);
   }

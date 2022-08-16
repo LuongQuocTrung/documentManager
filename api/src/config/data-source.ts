@@ -8,7 +8,7 @@ import {
   Cabinet,
   Drawer,
   Document,
-} from "./entitys";
+} from "../entitys";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -23,3 +23,11 @@ export const AppDataSource = new DataSource({
   migrations: [],
   subscribers: [],
 });
+export async function connectionPostgres() {
+  try {
+    await AppDataSource.initialize();
+    console.log("connect successfully");
+  } catch (e) {
+    console.log("connect to database fail");
+  }
+}

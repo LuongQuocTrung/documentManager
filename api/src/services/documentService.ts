@@ -1,16 +1,18 @@
-import documentDAO from "../DAO/documentDAO";
-import drawerDAO from "../DAO/drawerDAO";
-import {
-  ICreateDocument,
-  IQueryDocument,
-  IStorageDeliveryDoc,
-} from "../models/models";
+import documentDAO from "../dao/document";
+import drawerDAO from "../dao/drawer";
+import { ICreateDocument } from "../models/createRequest";
+import { IStorageDeliveryDoc } from "../models/commonRequest";
+import { IQueryDocument } from "../models/queryRequest";
+
 import responseMsg from "../const/responseMsg";
 export default class documentService {
   static createDocument = async (document: ICreateDocument) => {
     const drawer = await drawerDAO.findDrawerById(document.drawerId);
     if (!drawer?.active) {
       return { data: null, message: responseMsg.CREATE_ERROR };
+    }
+    if (!(await drawerDAO.isManagementCompany(drawer.id))) {
+      return { data: null, message: "Type of company is not management" };
     }
     const rs = await documentDAO.createDocument(document);
     if (!rs) {
@@ -36,6 +38,9 @@ export default class documentService {
     if (query.status != "waiting" && query.status != "stored") {
       query.status = null;
     }
+    if (query.createdAt) {
+      query.createdAt = new Date(query.createdAt);
+    }
     const rs = await documentDAO.findDocuments(query);
     if (!rs) {
       return { data: null, message: responseMsg.NOT_FOUND };
@@ -44,6 +49,9 @@ export default class documentService {
   };
 
   static storageDelivery = async (params: IStorageDeliveryDoc) => {
+    if (await drawerDAO.isManagementCompany(params.drawerId)) {
+      return { data: null, message: "the company of drawer is not storage" };
+    }
     const rs = await documentDAO.storageDelivery(params);
     if (!rs) {
       return { data: null, message: responseMsg.UPDATE_STATUS_ERROR };

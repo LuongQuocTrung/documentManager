@@ -1,5 +1,6 @@
-import departmentDAO from "../DAO/departmentDAO";
-import { ICreateDepartment, IQueryDepartment } from "../models/models";
+import departmentDAO from "../dao/department";
+import { ICreateDepartment } from "../models/createRequest";
+import { IQueryDepartment } from "../models/queryRequest";
 import responseMsg from "../const/responseMsg";
 export default class departmentService {
   static createDepartment = async (department: ICreateDepartment) => {

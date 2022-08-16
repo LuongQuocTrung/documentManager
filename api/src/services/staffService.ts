@@ -1,6 +1,7 @@
 import responseMsg from "../const/responseMsg";
-import StaffDAO from "../DAO/staffDAO";
-import { ICreateStaff, IQueryStaff } from "../models/models";
+import StaffDAO from "../dao/staff";
+import { ICreateStaff } from "../models/createRequest";
+import { IQueryStaff } from "../models/queryRequest";
 
 export default class staffService {
   static createStaff = async (staff: ICreateStaff) => {

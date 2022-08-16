@@ -1,7 +1,9 @@
 import { Company } from "../entitys";
-import { AppDataSource } from "../data-source";
-import { ICreateCompany, IQueryCompany } from "../models/models";
+import { AppDataSource } from "../config/data-source";
+import { ICreateCompany } from "../models/createRequest";
 import { Brackets } from "typeorm";
+import { IQueryCompany } from "../models/queryRequest";
+
 const companyResponsitory = AppDataSource.getRepository(Company);
 export default class CompanyDAO {
   static createCompany = async (

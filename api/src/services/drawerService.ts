@@ -1,5 +1,7 @@
-import drawerDAO from "../DAO/drawerDAO";
-import { ICreateDrawer, IQueryDrawer } from "../models/models";
+import drawerDAO from "../dao/drawer";
+import { ICreateDrawer } from "../models/createRequest";
+import { IQueryDrawer } from "../models/queryRequest";
+
 import responseMsg from "../const/responseMsg";
 export default class drawerService {
   static createDrawer = async (drawer: ICreateDrawer) => {

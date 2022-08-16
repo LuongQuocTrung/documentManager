@@ -1,7 +1,8 @@
 import { Drawer } from "../entitys";
-import { AppDataSource } from "../data-source";
-import { ICreateDrawer, IQueryDrawer } from "../models/models";
-import cabinetDAO from "./cabinetDAO";
+import { AppDataSource } from "../config/data-source";
+import { ICreateDrawer } from "../models/createRequest";
+import cabinetDAO from "./cabinet";
+import { IQueryDrawer } from "../models/queryRequest";
 
 const drawerRes = AppDataSource.getRepository(Drawer);
 

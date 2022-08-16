@@ -1,7 +1,8 @@
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../config/data-source";
 import { Staff } from "../entitys";
-import { ICreateStaff, IQueryStaff } from "../models/models";
-import departmentDAO from "./departmentDAO";
+import { ICreateStaff } from "../models/createRequest";
+import { IQueryStaff } from "../models/queryRequest";
+import departmentDAO from "./department";
 import { Brackets } from "typeorm";
 const staffReponsitory = AppDataSource.getRepository(Staff);
 

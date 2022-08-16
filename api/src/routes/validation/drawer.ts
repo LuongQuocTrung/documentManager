@@ -28,7 +28,7 @@ export const createDrawer = async (
   next: NextFunction
 ) => {
   await checkBody(["name", "active", "cabinetId"]).notEmpty().run(req);
-  await checkBody("name").isString().run(req);
+  await checkBody("name").isString().trim().run(req);
   await checkBody("cabinetId").isUUID().run(req);
   await checkBody("active").isBoolean().run(req);
   const rs = validationResult(req);
@@ -51,6 +51,7 @@ export const queryDrawer = async (
   await checkQuery(["keyword", "typeCompany"])
     .isString()
     .optional({ nullable: true })
+    .trim()
     .run(req);
   await checkQuery("cabinetId").isUUID().optional({ nullable: true }).run(req);
   await checkQuery("active").isBoolean().optional({ nullable: true }).run(req);

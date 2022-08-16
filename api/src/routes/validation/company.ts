@@ -28,7 +28,7 @@ export const createCompany = async (
   next: NextFunction
 ) => {
   await checkBody(["name", "active", "address"]).notEmpty().run(req);
-  await checkBody(["name", "address"]).isString().run(req);
+  await checkBody(["name", "address"]).isString().trim().run(req);
   await checkBody("active").isBoolean().run(req);
   const rs = validationResult(req);
   if (!rs.isEmpty()) {
@@ -46,7 +46,11 @@ export const queryCompany = async (
     .isNumeric()
     .optional({ nullable: true })
     .run(req);
-  await checkQuery("keyword").isString().optional({ nullable: true }).run(req);
+  await checkQuery("keyword")
+    .isString()
+    .optional({ nullable: true })
+    .trim()
+    .run(req);
   await checkQuery("active").isBoolean().optional({ nullable: true }).run(req);
   const rs = validationResult(req);
   if (!rs.isEmpty()) {

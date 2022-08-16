@@ -1,13 +1,10 @@
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../config/data-source";
 import { Document, Drawer } from "../entitys";
-import {
-  ICreateDocument,
-  IQueryDocument,
-  IStorageDeliveryDoc,
-} from "../models/models";
-import drawerDAO from "./drawerDAO";
-import StaffDAO from "./staffDAO";
-
+import { ICreateDocument } from "../models/createRequest";
+import drawerDAO from "./drawer";
+import StaffDAO from "./staff";
+import { IQueryDocument } from "../models/queryRequest";
+import { IStorageDeliveryDoc } from "../models/commonRequest";
 const documentResponsitory = AppDataSource.getRepository(Document);
 
 export default class documentDAO {

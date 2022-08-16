@@ -1,7 +1,8 @@
 import { Inventory } from "../entitys";
-import { AppDataSource } from "../data-source";
-import { IcreateIventory, IQueryInventory } from "../models/models";
-import CompanyDAO from "./companyDAO";
+import { AppDataSource } from "../config/data-source";
+import { IcreateIventory } from "../models/createRequest";
+import CompanyDAO from "./company";
+import { IQueryInventory } from "../models/queryRequest";
 
 const inventoryRes = AppDataSource.getRepository(Inventory);
 
@@ -16,7 +17,7 @@ export default class inventoryDAO {
     }
     return rs;
   };
-  static findInventorys = async (
+  static findInventories = async (
     query: IQueryInventory
   ): Promise<Inventory[]> => {
     const limit = query.limit ? Math.floor(query.limit) : 20;

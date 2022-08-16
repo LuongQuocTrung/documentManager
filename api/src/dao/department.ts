@@ -1,7 +1,9 @@
 import { Department } from "../entitys";
-import { AppDataSource } from "../data-source";
-import { ICreateDepartment, IQueryDepartment } from "../models/models";
-import CompanyDAO from "./companyDAO";
+import { AppDataSource } from "../config/data-source";
+import { ICreateDepartment } from "../models/createRequest";
+import CompanyDAO from "./company";
+import { IQueryDepartment } from "../models/queryRequest";
+
 const departmenReponsitory = AppDataSource.getRepository(Department);
 
 export default class departmentDAO {
@@ -23,6 +25,7 @@ export default class departmentDAO {
     const limit = query.limit ? Math.floor(query.limit) : 20;
     const keyword = query.keyword ? "%" + query.keyword + "%" : "%%";
     const skip = query.page > 0 ? Math.floor(query.page - 1) * limit : 0;
+    console.log(keyword);
     const queryString = await departmenReponsitory
       .createQueryBuilder()
       .innerJoinAndSelect("Department.company", "Company")

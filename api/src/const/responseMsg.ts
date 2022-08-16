@@ -14,6 +14,8 @@ const responseMsg = {
   ALREADY_EXIST: "Already exist",
   NOT_EXIST: "Not exist",
   REQUIRE_TOKEN: "Please log in to get access token",
+  AUTH_FAILED: "Authentication failed",
+  BAD_REQUEST: "Bad request",
 };
 
 export default responseMsg;

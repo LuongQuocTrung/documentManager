@@ -1,8 +1,6 @@
-import {
-  ICreateDocument,
-  IQueryDocument,
-  IStorageDeliveryDoc,
-} from "../models/models";
+import { ICreateDocument } from "../models/createRequest";
+import { IStorageDeliveryDoc } from "../models/commonRequest";
+import { IQueryDocument } from "../models/queryRequest";
 import documentService from "../services/documentService";
 import { Request, Response, NextFunction } from "express";
 import * as response from "../utils/response";
@@ -29,9 +27,6 @@ export default class documentController {
   ) => {
     try {
       const query: IQueryDocument = req.query as never;
-      if (req.body.createdAt) {
-        query.createdAt = new Date(query.createdAt);
-      }
       const rs = await documentService.findDocuments(query);
       if (!rs.data) {
         return response.r404(res, rs.message);
@@ -86,6 +81,7 @@ export default class documentController {
   ) => {
     try {
       const document: ICreateDocument = req.body as ICreateDocument;
+      document.staffId = res.locals.auth.id;
       const rs = await documentService.updateDocument(document, req.params.id);
       if (!rs.data) {
         return response.r400(res, rs.message);

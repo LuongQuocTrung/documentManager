@@ -1,8 +1,8 @@
-import staffDAO from "../DAO/staffDAO";
+import staffDAO from "../dao/staff";
 import { Department, Staff } from "../entitys";
-import { ILogin } from "../models/models";
+import { ILogin } from "../models/commonRequest";
 import * as jwt from "jsonwebtoken";
-import departmentDAO from "../DAO/departmentDAO";
+import departmentDAO from "../dao/department";
 import * as bcrypt from "bcryptjs";
 import config from "../config/config";
 import responseMsg from "../const/responseMsg";

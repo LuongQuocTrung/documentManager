@@ -1,8 +1,9 @@
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "../config/data-source";
 import { Cabinet } from "../entitys";
-import { ICreateCabinet, IQueryCabinet } from "../models/models";
+import { ICreateCabinet } from "../models/createRequest";
+import { IQueryCabinet } from "../models/queryRequest";
 import { Brackets } from "typeorm";
-import inventoryDAO from "./inventoryDAO";
+import inventoryDAO from "./inventory";
 
 const cabinetRes = AppDataSource.getRepository(Cabinet);
 export default class cabinetDAO {

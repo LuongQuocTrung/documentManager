@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Staff } from "../entitys";
-import { ILogin } from "../models/models";
+import { ILogin } from "../models/commonRequest";
 import commonService from "../services/commonService";
 import staffService from "../services/staffService";
 import * as response from "../utils/response";

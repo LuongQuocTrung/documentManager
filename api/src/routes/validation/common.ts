@@ -14,7 +14,7 @@ export const login = async (
   res: Response,
   next: NextFunction
 ) => {
-  await checkBody(["phone", "password"]).notEmpty().isString().run(req);
+  await checkBody(["phone", "password"]).notEmpty().isString().trim().run(req);
   const rs = validationResult(req);
   if (!rs.isEmpty()) {
     const error = new AppError(403, responseMsg.INVALID_INPUT);

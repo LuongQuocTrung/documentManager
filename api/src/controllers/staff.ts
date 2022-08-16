@@ -1,16 +1,17 @@
-import { ICreateDepartment, IQueryDepartment } from "../models/models";
-import departmentService from "../services/departmenService";
+import staffService from "../services/staffService";
 import { Request, Response, NextFunction } from "express";
 import * as response from "../utils/response";
+import { ICreateStaff } from "../models/createRequest";
+import { IQueryStaff } from "../models/queryRequest";
 import responseMsg from "../const/responseMsg";
-export default class departmentController {
-  static getDepartmentById = async (
+export default class staffController {
+  static getStaffById = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const rs = await departmentService.findDepartmentByID(req.params.id);
+      const rs = await staffService.findStaffById(req.params.id);
       if (!rs.data) {
         return response.r404(res, rs.message);
       }
@@ -19,24 +20,23 @@ export default class departmentController {
       next(error);
     }
   };
-  static getDepartments = async (
+  static getStaffs = async (
     req: Request,
     res: Response,
     next: NextFunction
   ) => {
     try {
-      const query: IQueryDepartment = req.query as never;
-      const rs = await departmentService.findDepartments(query);
+      const query: IQueryStaff = req.query as never;
+      const rs = await staffService.findStaffs(query);
       if (!rs.data) {
         return response.r404(res, rs.message);
       }
       return response.r200(res, rs.data, rs.message);
     } catch (error) {
-      console.log(error);
       next(error);
     }
   };
-  static createDepartment = async (
+  static createStaff = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -45,8 +45,8 @@ export default class departmentController {
       if (!res.locals.auth || !res.locals.auth.isRoot) {
         return response.r401(res, responseMsg.DENIED_ACCESS);
       }
-      const department: ICreateDepartment = req.body as ICreateDepartment;
-      const rs = await departmentService.createDepartment(department);
+      const staff: ICreateStaff = req.body as ICreateStaff;
+      const rs = await staffService.createStaff(staff);
       if (!rs.data) {
         return response.r400(res, rs.message);
       }
@@ -55,7 +55,7 @@ export default class departmentController {
       next(error);
     }
   };
-  static changeActiveDepartment = async (
+  static changeActiveStaff = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -64,7 +64,7 @@ export default class departmentController {
       if (!res.locals.auth || !res.locals.auth.isRoot) {
         return response.r401(res, responseMsg.DENIED_ACCESS);
       }
-      const rs = await departmentService.changeActive(req.params.id);
+      const rs = await staffService.changeActiveStaff(req.params.id);
       if (!rs.data) {
         return response.r404(res, rs.message);
       }
@@ -74,7 +74,7 @@ export default class departmentController {
       next(error);
     }
   };
-  static updateDepartment = async (
+  static updateStaff = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -83,11 +83,8 @@ export default class departmentController {
       if (!res.locals.auth || !res.locals.auth.isRoot) {
         return response.r401(res, responseMsg.DENIED_ACCESS);
       }
-      const department: ICreateDepartment = req.body as ICreateDepartment;
-      const rs = await departmentService.updateDepartment(
-        department,
-        req.params.id
-      );
+      const staff: ICreateStaff = req.body as ICreateStaff;
+      const rs = await staffService.updateStaff(staff, req.params.id);
       if (!rs.data) {
         return response.r400(res, rs.message);
       }

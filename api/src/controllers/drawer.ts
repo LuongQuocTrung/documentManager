@@ -1,4 +1,5 @@
-import { ICreateDrawer, IQueryDrawer } from "../models/models";
+import { ICreateDrawer } from "../models/createRequest";
+import { IQueryDrawer } from "../models/queryRequest";
 import drawerService from "../services/drawerService";
 import { Request, Response, NextFunction } from "express";
 import * as response from "../utils/response";

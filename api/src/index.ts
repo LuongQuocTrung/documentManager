@@ -1,26 +1,32 @@
 import * as dotenv from "dotenv";
+import { Express } from "express";
 import express from "express";
-import { AppDataSource } from "./data-source";
+import { AppDataSource, connectionPostgres } from "./config/data-source";
 import errorHandle from "./middleware/errorHandle";
 import morgan from "morgan";
 import router from "./routes";
 import bodyParser from "body-parser";
+import cors from "cors";
+import swaggerDocs from "./config/swagger";
 async function main() {
-  dotenv.config();
-  AppDataSource.initialize()
-    .then(async () => {
-      const app = express();
-      app.use(bodyParser.urlencoded({ extended: true }));
-      app.use(bodyParser.json());
-      app.use(morgan("dev"));
+  const app: Express = express();
 
-      app.use(router);
-      app.use(errorHandle);
-      const PORT = process.env.PORT || 5000;
-      app.listen(PORT, () => {
-        console.log("server listening on port " + PORT);
-      });
-    })
-    .catch((error) => console.log(error));
+  swaggerDocs(app);
+
+  dotenv.config();
+
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(morgan("dev"));
+  app.use(cors());
+
+  await connectionPostgres();
+
+  router(app);
+  app.use(errorHandle);
+  const PORT = 5000;
+  app.listen(PORT, () => {
+    console.log("server listening on port " + PORT);
+  });
 }
 main();

@@ -41,7 +41,7 @@ export const createDocument = async (
   next: NextFunction
 ) => {
   await checkBody(["title", "description", "drawerId"]).notEmpty().run(req);
-  await checkBody(["title", "description"]).isString().run(req);
+  await checkBody(["title", "description"]).isString().trim().run(req);
   await checkBody(["drawerId"]).isUUID().run(req);
   const rs = validationResult(req);
   if (!rs.isEmpty()) {
@@ -56,6 +56,7 @@ export const queryDocument = async (
   res: Response,
   next: NextFunction
 ) => {
+  console.log(req.query.keyword);
   await checkQuery(["limit", "page"])
     .isNumeric()
     .optional({ nullable: true })
@@ -63,6 +64,7 @@ export const queryDocument = async (
   await checkQuery(["keyword", "status"])
     .isString()
     .optional({ nullable: true })
+    .trim()
     .run(req);
   await checkQuery("drawerId").isUUID().optional({ nullable: true }).run(req);
   await checkQuery(["createdAt"])
@@ -70,6 +72,7 @@ export const queryDocument = async (
     .optional({ nullable: true })
     .run(req);
   const rs = validationResult(req);
+  console.log(req.query.keyword);
   if (!rs.isEmpty()) {
     const error = new AppError(403, responseMsg.INVALID_INPUT);
     return next(error);

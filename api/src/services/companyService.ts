@@ -1,6 +1,7 @@
-import CompanyDAO from "../DAO/companyDAO";
+import CompanyDAO from "../dao/company";
 import { Company } from "../entitys";
-import { ICreateCompany, IQueryCompany } from "../models/models";
+import { ICreateCompany } from "../models/createRequest";
+import { IQueryCompany } from "../models/queryRequest";
 import responseMsg from "../const/responseMsg";
 export default class CompanyService {
   static createCompany = async (company: ICreateCompany) => {
@@ -24,7 +25,7 @@ export default class CompanyService {
     }
     return { data: rs, message: responseMsg.SUCCESS };
   };
-  static findCompanys = async (query: IQueryCompany) => {
+  static findCompanies = async (query: IQueryCompany) => {
     if (query.typeCompany != "storage" && query.typeCompany != "management") {
       query.typeCompany = "all";
     }
