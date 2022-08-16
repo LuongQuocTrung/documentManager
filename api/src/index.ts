@@ -1,13 +1,13 @@
 import * as dotenv from "dotenv";
 import { Express } from "express";
 import express from "express";
-import { AppDataSource, connectionPostgres } from "./config/data-source";
-import errorHandle from "./middleware/errorHandle";
+import errorHandle from "./middlewares/error-handle";
+import db from "./configs/data-source";
 import morgan from "morgan";
 import router from "./routes";
 import bodyParser from "body-parser";
 import cors from "cors";
-import swaggerDocs from "./config/swagger";
+import swaggerDocs from "./configs/swagger";
 async function main() {
   const app: Express = express();
 
@@ -20,7 +20,11 @@ async function main() {
   app.use(morgan("dev"));
   app.use(cors());
 
-  await connectionPostgres();
+  db.setAppDataSource(process.env);
+  db.getAppDataSourch()
+    .initialize()
+    .then(() => {})
+    .catch((error) => console.log(error));
 
   router(app);
   app.use(errorHandle);

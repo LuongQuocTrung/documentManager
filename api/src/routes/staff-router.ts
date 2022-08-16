@@ -1,85 +1,22 @@
 import * as express from "express";
-import departmentController from "../controllers/department";
-import { auth } from "../middleware/auth";
-import * as validate from "./validate/department";
+import controllers from "../controllers";
+import { auth } from "../middlewares/auth";
+import { isRoot } from "./permission/requireRoot";
+import * as validate from "./validation/staff";
+const router = express.Router();
+router.use(auth);
 /**
  * @openapi
  * tags:
- *  name: Department
+ *  name: Staff
  */
-const router = express.Router();
-router.use(auth);
-router.get("/", validate.queryDepartment, departmentController.getDepartments);
+router.get("/:id", validate.isUUID, controllers.staff.findById);
 /**
  * @openapi
- * /department:
+ * /staff/{id}:
  *   get:
- *     summary: Get departments
- *     tags: [Department]
- *     security:
- *      - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: limit
- *         schema:
- *           type: string
- *       - in: query
- *         name: page
- *         schema:
- *           type: string
- *       - in: query
- *         name: keyword
- *         schema:
- *           type: string
- *       - in: query
- *         name: companyId
- *         description: availble (storage,management)
- *         schema:
- *            type: string
- *       - in: query
- *         name: active
- *         schema:
- *            type: boolean
- *     responses:
- *       200:
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                    type: string
- *                 data:
- *                     type: array
- *                     items:
- *                      properties:
- *                       id:
- *                         type: string
- *                       name:
- *                         type: string
- *                       active:
- *                         type: string
- *                       company:
- *                         type: object
- *                         properties:
- *                            id:
- *                              type: string
- *                            name:
- *                              type: string
- *                            address:
- *                              type: string
- *                            active:
- *                              type: boolean
- *                            typeCompany:
- *                              type: string
- */
-router.get("/:id", validate.isUUID, departmentController.getDepartmentById);
-/**
- * @openapi
- * /department/{id}:
- *   get:
- *     summary: Get department
- *     tags: [Department]
+ *     summary: Get staff
+ *     tags: [Staff]
  *     security:
  *      - bearerAuth: []
  *     parameters:
@@ -103,33 +40,72 @@ router.get("/:id", validate.isUUID, departmentController.getDepartmentById);
  *                         type: string
  *                       name:
  *                         type: string
- *                       active:
+ *                       phone:
  *                         type: string
- *                       company:
- *                         type: object
- *                         properties:
- *                            id:
- *                              type: string
- *                            name:
- *                              type: string
- *                            address:
- *                              type: string
- *                            active:
- *                              type: boolean
- *                            typeCompany:
- *                              type: string
+ *                       isRoot:
+ *                         type: boolean
+ *                       active:
+ *                         type: boolean
  */
-router.post(
-  "/",
-  validate.createDepartment,
-  departmentController.createDepartment
-);
+router.get("/", validate.queryStaff, controllers.staff.find);
 /**
  * @openapi
- * /department:
+ * /staff:
+ *   get:
+ *     summary: Get staff list
+ *     tags: [Staff]
+ *     security:
+ *      - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: keyword
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: active
+ *         description: available value (true, false)
+ *         schema:
+ *            type: string
+ *     responses:
+ *       200:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                    type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       name:
+ *                         type: string
+ *                       phone:
+ *                         type: string
+ *                       isRoot:
+ *                         type: boolean
+ *                       active:
+ *                         type: boolean
+ */
+router.post("/", validate.createStaff, isRoot, controllers.staff.create);
+/**
+ * @openapi
+ * /staff:
  *   post:
- *     summary: create department
- *     tags: [Department]
+ *     summary: create staff
+ *     tags: [Staff]
  *     security:
  *      - bearerAuth: []
  *     requestBody:
@@ -141,9 +117,13 @@ router.post(
  *             properties:
  *               name:
  *                 type: string
- *               companyId:
+ *               phone:
+ *                 type: string
+ *               password:
  *                 type: string
  *               active:
+ *                 type: boolean
+ *               isRoot:
  *                 type: boolean
  *     responses:
  *       200:
@@ -167,28 +147,20 @@ router.post(
  *                         type: boolean
  *                       active:
  *                         type: boolean
- *                       departmentId:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           name:
- *                             type: string
- *                           active:
- *                             type: boolean
  */
 router.put(
   "/:id",
   validate.isUUID,
-  validate.createDepartment,
-  departmentController.updateDepartment
+  validate.createStaff,
+  isRoot,
+  controllers.staff.update
 );
 /**
  * @openapi
- * /department/{id}:
+ * /staff/{id}:
  *   put:
- *     summary: update department
- *     tags: [Department]
+ *     summary: update staff
+ *     tags: [Staff]
  *     security:
  *      - bearerAuth: []
  *     parameters:
@@ -205,9 +177,13 @@ router.put(
  *             properties:
  *               name:
  *                 type: string
- *               companyId:
+ *               phone:
+ *                 type: string
+ *               password:
  *                 type: string
  *               active:
+ *                 type: boolean
+ *               isRoot:
  *                 type: boolean
  *     responses:
  *       200:
@@ -231,27 +207,19 @@ router.put(
  *                         type: boolean
  *                       active:
  *                         type: boolean
- *                       company:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           name:
- *                             type: string
- *                           active:
- *                             type: boolean
  */
 router.patch(
   "/:id/active",
   validate.isUUID,
-  departmentController.changeActiveDepartment
+  isRoot,
+  controllers.staff.changeActive
 );
 /**
  * @openapi
- * /department/{id}/active:
+ * /staff/{id}/active:
  *   patch:
- *     summary: change status department
- *     tags: [Department]
+ *     summary: update staff
+ *     tags: [Staff]
  *     security:
  *      - bearerAuth: []
  *     parameters:
@@ -281,14 +249,5 @@ router.patch(
  *                         type: boolean
  *                       active:
  *                         type: boolean
- *                       departmentId:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: string
- *                           name:
- *                             type: string
- *                           active:
- *                             type: boolean
  */
 export default router;

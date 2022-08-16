@@ -14,24 +14,20 @@ export const createStaff = async (
   res: Response,
   next: NextFunction
 ) => {
-  await checkBody([
-    "name",
-    "phone",
-    "password",
-    "departmentId",
-    "active",
-    "isRoot",
-  ])
+  await checkBody(["name", "phone", "password", "active", "isRoot"])
     .notEmpty()
     .run(req);
   await checkBody(["name", "phone", "password"]).isString().trim().run(req);
-  await checkBody("departmentId").isUUID().run(req);
   await checkBody(["active", "isRoot"]).isBoolean().run(req);
 
   const rs = validationResult(req);
   if (!rs.isEmpty()) {
     const error = new AppError(403, responseMsg.INVALID_INPUT);
     return next(error);
+  }
+  if (typeof req.body.active == "string") {
+    req.body.active = req.body.active == "true";
+    req.body.isRoot = req.body.isRoot == "true";
   }
   next();
 };
@@ -64,14 +60,13 @@ export const queryStaff = async (
     .trim()
     .run(req);
   await checkQuery("active").isBoolean().optional({ nullable: true }).run(req);
-  await checkQuery("departmentId")
-    .isUUID()
-    .optional({ nullable: true })
-    .run(req);
   const rs = await validationResult(req);
   if (!rs.isEmpty()) {
     const error = new AppError(403, responseMsg.INVALID_INPUT);
     return next(error);
+  }
+  if (typeof req.body.active == "string") {
+    req.body.active = req.body.active == "true";
   }
   next();
 };

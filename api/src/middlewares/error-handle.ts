@@ -14,9 +14,12 @@ const errorHandle = (
     statusCode = 401;
     message = responseMsg.REQUIRE_TOKEN;
   }
-  let status = String(statusCode).startsWith("4") ? "Fail" : "Error";
+  if (String(statusCode).startsWith("5")) {
+    console.log("Server crash");
+    throw error;
+  }
   res.status(statusCode).json({
-    status: error.status,
+    status: "Failure",
     message: message,
   });
 };

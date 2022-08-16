@@ -7,6 +7,12 @@ export const r200 = (
 ) => {
   return res.status(200).json({ message, data: data });
 };
+export const r409 = (
+  res: Response,
+  message: string = responseMsg.ALREADY_EXIST
+) => {
+  return res.status(409).json({ message });
+};
 export const r404 = (
   res: Response,
   message: string = responseMsg.NOT_FOUND

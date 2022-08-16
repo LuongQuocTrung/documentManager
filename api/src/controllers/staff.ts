@@ -1,96 +1,51 @@
-import staffService from "../services/staffService";
-import { Request, Response, NextFunction } from "express";
+import services from "../services";
+import { Request, Response } from "express";
 import * as response from "../utils/response";
 import { ICreateStaff } from "../models/createRequest";
 import { IQueryStaff } from "../models/queryRequest";
 import responseMsg from "../const/responseMsg";
-export default class staffController {
-  static getStaffById = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const rs = await staffService.findStaffById(req.params.id);
-      if (!rs.data) {
-        return response.r404(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
+export const create = async (req: Request, res: Response) => {
+  const staff: ICreateStaff = req.body as ICreateStaff;
+  const [data, error] = <[Object | null, Error | null]>(
+    await services.staff.create(staff)
+  );
+  if (error) {
+    if (error.message == responseMsg.ALREADY_EXIST) {
+      return response.r409(res);
     }
-  };
-  static getStaffs = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      const query: IQueryStaff = req.query as never;
-      const rs = await staffService.findStaffs(query);
-      if (!rs.data) {
-        return response.r404(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
+    return response.r404(res);
+  }
+  return response.r200(res, data);
+};
+export const update = async (req: Request, res: Response) => {
+  const staff: ICreateStaff = req.body as ICreateStaff;
+  const [data, error] = <[Object | null, Error | null]>(
+    await services.staff.update(req.params.id, staff)
+  );
+  if (error) {
+    if (error.message == responseMsg.ALREADY_EXIST) {
+      return response.r409(res);
     }
-  };
-  static createStaff = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      if (!res.locals.auth || !res.locals.auth.isRoot) {
-        return response.r401(res, responseMsg.DENIED_ACCESS);
-      }
-      const staff: ICreateStaff = req.body as ICreateStaff;
-      const rs = await staffService.createStaff(staff);
-      if (!rs.data) {
-        return response.r400(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
-    }
-  };
-  static changeActiveStaff = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      if (!res.locals.auth || !res.locals.auth.isRoot) {
-        return response.r401(res, responseMsg.DENIED_ACCESS);
-      }
-      const rs = await staffService.changeActiveStaff(req.params.id);
-      if (!rs.data) {
-        return response.r404(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      console.log(error);
-      next(error);
-    }
-  };
-  static updateStaff = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      if (!res.locals.auth || !res.locals.auth.isRoot) {
-        return response.r401(res, responseMsg.DENIED_ACCESS);
-      }
-      const staff: ICreateStaff = req.body as ICreateStaff;
-      const rs = await staffService.updateStaff(staff, req.params.id);
-      if (!rs.data) {
-        return response.r400(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
+    return response.r404(res);
+  }
+  return response.r200(res, data);
+};
+export const changeActive = async (req: Request, res: Response) => {
+  const [data, error] = await services.staff.changeActive(req.params.id);
+  if (error) {
+    return response.r404(res);
+  }
+  return response.r200(res, data);
+};
+export const findById = async (req: Request, res: Response) => {
+  const [data, error] = await services.staff.findById(req.params.id);
+  if (error) {
+    return response.r404(res);
+  }
+  return response.r200(res, data);
+};
+export const find = async (req: Request, res: Response) => {
+  const query: IQueryStaff = req.query as never;
+  const [data, error] = await services.staff.find(query);
+  return response.r200(res, data);
+};

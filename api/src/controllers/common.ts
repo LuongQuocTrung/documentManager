@@ -1,49 +1,16 @@
-import { NextFunction, Request, Response } from "express";
-import { Staff } from "../entitys";
 import { ILogin } from "../models/commonRequest";
-import commonService from "../services/commonService";
-import staffService from "../services/staffService";
+import services from "../services";
+import { Request, Response } from "express";
 import * as response from "../utils/response";
-import { statusDoc } from "../utils/statusDoc";
-import { typeCompany } from "../utils/typeCompany";
-class commonController {
-  static login = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const login: ILogin = req.body as ILogin;
-      const rs = await commonService.login(login);
-      if (!rs.data) {
-        return response.r400(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
-    }
-  };
-  static getMe = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const user: Staff = res.locals.auth as never;
-      const rs = await commonService.getMe(user);
-      if (!rs.data) {
-        return response.r400(res, rs.message);
-      }
-      return response.r200(res, rs.data, rs.message);
-    } catch (error) {
-      next(error);
-    }
-  };
-  static getCategory = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    try {
-      return response.r200(res, {
-        DocumentStatus: statusDoc,
-        CompanyType: typeCompany,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-export default commonController;
+export const login = async (req: Request, res: Response) => {
+  const queryLogin: ILogin = req.body as ILogin;
+
+  const [data, error] = <[Object | null, Error | null]>(
+    await services.common.login(queryLogin)
+  );
+  if (error) {
+    console.log(error);
+    return response.r401(res, error.message);
+  }
+  return response.r200(res, data);
+};
