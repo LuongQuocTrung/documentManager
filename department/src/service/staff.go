@@ -38,11 +38,14 @@ func UpdateStaff(ctx context.Context, id primitive.ObjectID, payload model.Staff
 }
 
 func ChangeActiveStaff(ctx context.Context, payload model.StaffStatusPayload) (model.Message, error) {
-	var _, err = dao.ChangeStaffActive(ctx, payload)
-	if err != nil {
-		return model.Message{}, err
+	if isExistStaff(ctx, payload.ID) {
+		var _, err = dao.ChangeStaffActive(ctx, payload)
+		if err != nil {
+			return model.Message{}, err
+		}
+		return model.Message{constant.UPDATE_SUCCESS}, nil
 	}
-	return model.Message{constant.UPDATE_SUCCESS}, nil
+	return model.Message{}, errors.New(constant.NOT_FOUND)
 }
 
 func DeleteStaff(ctx context.Context, id primitive.ObjectID) (model.Message, error) {
@@ -85,7 +88,6 @@ func GetStaffs(ctx context.Context, query *model.StaffQuery) ([]model.StaffRespo
 	if query.Page < 1 {
 		query.Page = 1
 	}
-
 	var rs, err = dao.GetStaffs(ctx, *query)
 	if err != nil {
 		return nil, err

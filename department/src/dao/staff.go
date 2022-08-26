@@ -11,10 +11,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var staffCollection *mongo.Collection
+var staffCol *mongo.Collection
 
 func SetStaffCollection(col *mongo.Collection) {
-	staffCollection = col
+	staffCol = col
 }
 
 func GetStaffs(ctx context.Context, query model.StaffQuery) ([]model.Staff, error) {
@@ -29,7 +29,7 @@ func GetStaffs(ctx context.Context, query model.StaffQuery) ([]model.Staff, erro
 		}
 	}
 	var opts = options.Find().SetLimit(query.Limit).SetSkip((query.Page - 1) * query.Limit)
-	var result, err = staffCollection.Find(ctx, filter, opts)
+	var result, err = staffCol.Find(ctx, filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func GetStaffs(ctx context.Context, query model.StaffQuery) ([]model.Staff, erro
 
 func GetStaff(ctx context.Context, id primitive.ObjectID) (model.Staff, error) {
 	var staff model.Staff
-	var err = staffCollection.FindOne(ctx, bson.D{{"_id", id}}).Decode(&staff)
+	var err = staffCol.FindOne(ctx, bson.D{{"_id", id}}).Decode(&staff)
 	if err != nil {
 		return staff, err
 	}
@@ -58,7 +58,7 @@ func GetStaff(ctx context.Context, id primitive.ObjectID) (model.Staff, error) {
 
 func GetStaffByEmail(ctx context.Context, email string) (model.Staff, error) {
 	var staff model.Staff
-	var err = staffCollection.FindOne(ctx, bson.D{{"email", email}}).Decode(&staff)
+	var err = staffCol.FindOne(ctx, bson.D{{"email", email}}).Decode(&staff)
 	if err != nil {
 		return staff, err
 	}
@@ -66,7 +66,7 @@ func GetStaffByEmail(ctx context.Context, email string) (model.Staff, error) {
 }
 
 func CreateStaff(ctx context.Context, staff model.StaffPayload) (interface{}, error) {
-	var result, err = staffCollection.InsertOne(context.TODO(), staff)
+	var result, err = staffCol.InsertOne(context.TODO(), staff)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func UpdateStaff(ctx context.Context, id primitive.ObjectID, staff model.StaffPa
 	var filter = bson.D{{"_id", id}}
 	var update = bson.D{{"$set", staff}}
 	var opts = options.FindOneAndUpdate().SetReturnDocument(options.After)
-	var err = staffCollection.FindOneAndUpdate(ctx, filter, update, opts).Decode(&result)
+	var err = staffCol.FindOneAndUpdate(ctx, filter, update, opts).Decode(&result)
 	if err != nil {
 		return result, err
 	}
@@ -88,7 +88,7 @@ func UpdateStaff(ctx context.Context, id primitive.ObjectID, staff model.StaffPa
 func ChangeStaffActive(ctx context.Context, payload model.StaffStatusPayload) (*mongo.UpdateResult, error) {
 	var filter = bson.D{{"_id", payload.ID}}
 	var update = bson.D{{"$set", bson.D{{"active", payload.Active}}}}
-	var result, err = staffCollection.UpdateOne(ctx, filter, update, options.Update())
+	var result, err = staffCol.UpdateOne(ctx, filter, update, options.Update())
 	if err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func ChangeStaffActive(ctx context.Context, payload model.StaffStatusPayload) (*
 
 func DeleteStaff(ctx context.Context, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	var filter = bson.D{{"_id", id}}
-	var result, err = staffCollection.DeleteOne(ctx, filter, options.Delete())
+	var result, err = staffCol.DeleteOne(ctx, filter, options.Delete())
 	if err != nil {
 		return nil, err
 	}
