@@ -8,7 +8,6 @@ import (
 	"department/src/util"
 	"errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"reflect"
 )
 
 func CreateStaff(ctx context.Context, payload model.StaffPayload) (model.Message, error) {
@@ -53,7 +52,7 @@ func DeleteStaff(ctx context.Context, id primitive.ObjectID) (model.Message, err
 	if err != nil {
 		return model.Message{}, err
 	}
-	return model.Message{constant.Success}, nil
+	return model.Message{constant.SUCCESS}, nil
 }
 
 func GetStaff(ctx context.Context, id primitive.ObjectID) (model.StaffResponse, error) {
@@ -64,7 +63,7 @@ func GetStaff(ctx context.Context, id primitive.ObjectID) (model.StaffResponse, 
 		return model.StaffResponse{}, err
 	}
 
-	if reflect.DeepEqual(rs, model.Staff{}) {
+	if rs.ID.IsZero() {
 		return model.StaffResponse{}, errors.New(constant.NOT_FOUND)
 	}
 
@@ -109,9 +108,20 @@ func GetStaffs(ctx context.Context, query *model.StaffQuery) ([]model.StaffRespo
 	return staffs, nil
 }
 
+func getStaffByEmail(ctx context.Context, email string) (*model.Staff, error) {
+	var rs, err = dao.GetStaffByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if rs.ID.IsZero() {
+		return nil, errors.New(constant.NOT_FOUND)
+	}
+	return &rs, nil
+}
+
 func isExistStaff(ctx context.Context, id primitive.ObjectID) bool {
 	var rs, err = dao.GetStaff(ctx, id)
-	if err != nil || reflect.DeepEqual(rs, model.Staff{}) {
+	if err != nil || rs.ID.IsZero() {
 		return false
 	}
 	return true
@@ -119,7 +129,7 @@ func isExistStaff(ctx context.Context, id primitive.ObjectID) bool {
 
 func isExistEmailStaff(ctx context.Context, email string) bool {
 	var rs, err = dao.GetStaffByEmail(ctx, email)
-	if err != nil || reflect.DeepEqual(rs, model.Staff{}) {
+	if err != nil || rs.ID.IsZero() {
 		return false
 	}
 	return true

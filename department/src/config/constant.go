@@ -7,7 +7,8 @@ type (
 	}
 
 	Env struct {
-		PortApp string
+		PortApp    string
+		SigningKey string
 		Database
 	}
 )

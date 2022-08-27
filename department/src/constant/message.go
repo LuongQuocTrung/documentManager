@@ -1,7 +1,8 @@
 package constant
 
 var (
-	Success             = "Successful"
+	SUCCESS             = "Successful"
+	FAILURE             = "Something error"
 	CREATE_SUCCESS      = "Create success"
 	UPDATE_SUCCESS      = "Update success"
 	CREATE_ERROR        = "Create failed"

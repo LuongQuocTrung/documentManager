@@ -14,8 +14,9 @@ func InitDotEnv() {
 		fmt.Println("Error loading env file")
 	}
 	portApp := GetEnv("PORT", "5000")
+	signingkey := GetEnv("SIGNING_KEY", "trungluongww")
 	database := Database{Url: GetEnv("MONGODB_URL", ""), Name: GetEnv("Name_BD", "test")}
-	ProcessEnv = Env{PortApp: portApp, Database: database}
+	ProcessEnv = Env{PortApp: portApp, Database: database, SigningKey: signingkey}
 
 }
 

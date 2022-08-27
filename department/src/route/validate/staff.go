@@ -14,7 +14,7 @@ func StaffPayload(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var payload = new(model.StaffPayload)
 		if err := c.Bind(payload); err != nil {
-			return c.JSON(400, constant.INVALID_INPUT)
+			return c.JSON(400, model.Message{constant.INVALID_INPUT})
 		}
 		var err = validation.ValidateStruct(payload,
 			validation.Field(&payload.Name, validation.Required),
@@ -37,7 +37,7 @@ func StaffQuery(next echo.HandlerFunc) echo.HandlerFunc {
 
 		var query = new(model.StaffQuery)
 		if err := c.Bind(query); err != nil {
-			return c.JSON(400, constant.INVALID_INPUT)
+			return c.JSON(400, model.Message{constant.INVALID_INPUT})
 		}
 		var err = validation.ValidateStruct(query,
 			validation.Field(&query.Limit, validation.Required),
@@ -45,7 +45,7 @@ func StaffQuery(next echo.HandlerFunc) echo.HandlerFunc {
 			validation.Field(&query.Department, validation.Each(is.MongoID)),
 		)
 		if err != nil {
-			return c.JSON(400, constant.INVALID_INPUT)
+			return c.JSON(400, model.Message{constant.INVALID_INPUT})
 		}
 		c.Set("query", *query)
 		return next(c)
@@ -57,7 +57,7 @@ func StaffStatusPayload(next echo.HandlerFunc) echo.HandlerFunc {
 		var payload = new(model.StaffStatusPayload)
 		if err := c.Bind(payload); err != nil {
 			fmt.Println("payload ...", err)
-			return c.JSON(400, constant.INVALID_INPUT)
+			return c.JSON(400, model.Message{constant.INVALID_INPUT})
 		}
 		var err = validation.ValidateStruct(payload,
 			validation.Field(&payload.ID, validation.Required),
@@ -65,7 +65,7 @@ func StaffStatusPayload(next echo.HandlerFunc) echo.HandlerFunc {
 		)
 		if err != nil {
 			fmt.Println("validate...", err, payload)
-			return c.JSON(400, constant.INVALID_INPUT)
+			return c.JSON(400, model.Message{constant.INVALID_INPUT})
 		}
 		c.Set("payload", *payload)
 		return next(c)

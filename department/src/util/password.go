@@ -1,6 +1,9 @@
 package util
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"fmt"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -8,6 +11,8 @@ func HashPassword(password string) (string, error) {
 }
 
 func ComparePassword(password string, hashPw string) bool {
+	fmt.Println(hashPw, "---", password)
 	err := bcrypt.CompareHashAndPassword([]byte(hashPw), []byte(password))
+	fmt.Println(err)
 	return err == nil
 }

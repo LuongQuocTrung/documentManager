@@ -6,6 +6,7 @@ import (
 
 func New(e *echo.Echo) {
 
-	NewStaffRouter(e)
-	NewDepartmentRouter(e)
+	newCommonRoute(e)
+	newStaffRouter(e)
+	newDepartmentRouter(e)
 }

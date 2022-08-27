@@ -41,13 +41,13 @@ func UpdateStaff(c echo.Context) error {
 }
 
 func GetStaffs(c echo.Context) error {
+	fmt.Println(c.Get("user"))
 	var ctx = c.Request().Context()
 	var query, ok = c.Get("query").(model.StaffQuery)
 	if !ok {
 		return c.JSON(400, model.Message{constant.BAD_REQUEST})
 	}
 	var rs, err = service.GetStaffs(ctx, &query)
-	fmt.Println(err)
 	if err != nil {
 		return c.JSON(400, err.Error())
 	}
