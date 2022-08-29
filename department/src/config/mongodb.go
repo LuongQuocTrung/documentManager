@@ -22,12 +22,7 @@ func ConnectMongoDb() {
 		return
 	}
 	mongoDb = client.Database(ProcessEnv.Database.Name)
-	dao.SetStaffCollection(GetCollection("staffs"))
-	dao.SetDepartmentCollection(GetCollection("departments"))
+	dao.SetStaffCollection(mongoDb.Collection("staffs"))
+	dao.SetDepartmentCollection(mongoDb.Collection("departments"))
 	fmt.Println("Connect successfully")
-}
-
-func GetCollection(name string) *mongo.Collection {
-	collection := mongoDb.Collection(name)
-	return collection
 }
